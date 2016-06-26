@@ -1,36 +1,13 @@
-# from cffi import FFI
-# import ctypes.util
-# import numpy
-
-# ffi = FFI()
-
-# ffi.cdef("""
-#  // int printf(const char *format, ...);   // copy-pasted from the man page
-#  int strcmp(const char *format, const char *s);   // copy-pasted from the man page
-# """)
-# C = ffi.dlopen(None)                     # loads the entire C namespace
-
-# # arg = ffi.new("char[]", "world")         # equivalent to C code: char arg[] = "world";
-
-# # C.printf("hi there, %s.\n", arg) 
-# C.strcmp('ok', 'ok')
-
-
-# ffi.cdef("""
-#   int ff_acelp_decode_8bit_to_1st_delay3(int ac_index);
-#   """)
-# C = ffi.dlopen(ctypes.util.find_library("libavcodec"))                     # loads the entire C namespace
-# C.ff_acelp_decode_8bit_to_1st_delay3(200)
 
 # from subprocess import call
 import pika
 import re
 from subprocess import run
-from subprocess import call
 import subprocess
 import wave
 import math
 import logging
+import os
 
 logger = logging.getLogger('fluency.file_splitter')
 
@@ -39,23 +16,17 @@ work_dir = '/tmp/decode'
 rabbit_ip = 'rabbit.fluency.com'
 storage = 'http://back.fluency.com/back/stories'
 
-# call(["ls", "-l"])
-# call(["ffmpeg", '-h'])
-# call(['pwd', '.'])
-# call(['cd', '/home/prj/'])
-
-# run(['rm', '/home/prj/1w*.wav'])
 
 # out = run(["ls", "-l"], stdout=subprocess.PIPE)
 
 
-# inp_f = '/home/feech/prj/49.avi'
-# out_f = '/tmp/out.mp3'
-# out = run(['ffmpeg', '-i', inp_f , '-vn', '-f', 'mp3', out_f])
 
-# t = '00:20:16,190 --> 00:20:17,490'
 
 def sec(str):
+    """
+    convert time to amount of seconds
+    # t = '00:20:16,190 --> 00:20:17,490'
+    """
     sec = 0
     sec+= 3600 * float(str[0:2])
     sec+= 60 * float(str[3:5])
@@ -99,9 +70,6 @@ def split_subtitles(file_name):
     #     snippet[i][0][1] = snippet[i+1][0][0]
 
     return snippets
-
-
-
 
 
 # data=pandas.read_csv('train.csv', index_col='PassengerId')
@@ -198,20 +166,29 @@ def callback(ch, method, properties, _body):
     else:
         print('undetected error...')
     finally:
-        run(['rm', work_dir+'/*'])
+        rm(work_dir)
     
     print('exit ... ')
     exit(0)
 
 
+def rm(_work_dir):
+    work_dir = _work_dir+'/'
+    for i in os.listdir(work_dir):
+        os.remove(work_dir+i)
+
+
 if __name__ == '__main__':
-    # print('ok')
+
+    print('started ... ')
 
     pr = run(['mkdir', work_dir])
     print(pr)
-    pr = run(['rm', '-f', work_dir+'/*'])
-    print(pr)
     
+    rm(work_dir)
+    
+    exit(0)
+
     connection = pika.BlockingConnection(pika.ConnectionParameters(
             host=rabbit_ip))
     channel = connection.channel()
