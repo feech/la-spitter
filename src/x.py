@@ -157,19 +157,19 @@ def callback(ch, method, properties, _body):
         processing(work_dir+'/file.wav', snippets, storage+'/snippet', story_id)
 
 
-        ch.basic_ack(delivery_tag = method.delivery_tag)
 
     except Exception as e:
-        print('error message: ' + e)
+        print('error message: ', e)
         if not pr is None:
             print('run failed: ', pr)
     else:
         print('undetected error...')
     finally:
         rm(work_dir)
+        ch.basic_ack(delivery_tag = method.delivery_tag)
     
-    print('exit ... ')
-    exit(0)
+    print('finish processing %s ... '%story_id)
+    # exit(0)
 
 
 def rm(_work_dir):
@@ -187,8 +187,6 @@ if __name__ == '__main__':
     
     rm(work_dir)
     
-    exit(0)
-
     connection = pika.BlockingConnection(pika.ConnectionParameters(
             host=rabbit_ip))
     channel = connection.channel()
