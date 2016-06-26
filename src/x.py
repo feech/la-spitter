@@ -36,8 +36,8 @@ logger = logging.getLogger('fluency.file_splitter')
 
 
 work_dir = '/tmp/decode'
-rabbit_ip = '172.17.0.2'
-storage = 'http://192.168.1.4/back/stories'
+rabbit_ip = 'rabbit.fluency.com'
+storage = 'http://back.fluency.com/back/stories'
 
 # call(["ls", "-l"])
 # call(["ffmpeg", '-h'])
